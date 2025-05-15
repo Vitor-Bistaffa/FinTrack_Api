@@ -1,30 +1,34 @@
-create table category(
+create table categoria(
     id serial primary key
-    ,name varchar(50)
+    ,nome varchar(50)
 );
 
-create table account(
+create table conta(
     id serial primary key
-    ,name varchar(50)
+    ,nome varchar(50)
 );
 
-create type transaction_type as enum (
-    'income'
-    ,'expense'
+create type tipo_transacao as enum (
+    'Despesa'
+    ,'Receita'
 );
 
-create table transaction(
+create table transacao(
     id serial primary key
-    ,amount decimal(19,4)
-    ,name varchar(50)
-    ,description text
-    ,type transaction_type
-    ,date date
-    ,installment integer
+    ,fk_id_categoria integer
+    ,foreign key (fk_id_categoria) references categoria(id)
+    ,fk_id_conta integer
+    ,foreign key (fk_id_conta) references conta(id)
+    ,valor decimal(19,4)
+    ,nome varchar(50)
+    ,descricao text
+    ,tipo tipo_transacao
+    ,data date
+    ,parcela integer
 );
 
-create table balance(
+create table saldo(
     id serial primary key
-    ,current_balance decimal(19,4)
-    ,date date
+    ,saldo_atual decimal(19,4)
+    ,data date
 );
