@@ -1,7 +1,6 @@
 package com.example.FinTrack_Api.controller;
 
-import com.example.FinTrack_Api.dto.request.conta.DadosCadastroConta;
-import com.example.FinTrack_Api.dto.request.conta.DadosListagemConta;
+import com.example.FinTrack_Api.dto.request.conta.*;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.repository.ContaRepository;
 import jakarta.validation.Valid;
@@ -30,21 +29,21 @@ public class ContaController {
 
     @PutMapping
     @Transactional
-    public void atualizar(@RequestBody DadosCadastroConta dados) {
+    public void atualizar(@RequestBody DadosAtualizarConta dados) {
         var conta = contaRepository.getReferenceById(dados.id());
         conta.atualizarInformacoes(dados);
     }
 
-    @PutMapping("/excluir")
+    @PutMapping("/remover")
     @Transactional
-    public void remover(@RequestBody DadosCadastroConta dados) {
+    public void remover(@RequestBody DadosRemoverConta dados) {
         var conta = contaRepository.getReferenceById(dados.id());
-        conta.deletar(dados);
+        conta.remover(dados);
     }
 
     @PutMapping("/restaurar")
     @Transactional
-    public void restaurar(@RequestBody DadosCadastroConta dados) {
+    public void restaurar(@RequestBody DadosRestaurarConta dados) {
         var conta = contaRepository.getReferenceById(dados.id());
         conta.restaurar(dados);
     }

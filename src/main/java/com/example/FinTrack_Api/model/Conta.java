@@ -1,8 +1,10 @@
 package com.example.FinTrack_Api.model;
 
+import com.example.FinTrack_Api.dto.request.conta.DadosAtualizarConta;
 import com.example.FinTrack_Api.dto.request.conta.DadosCadastroConta;
+import com.example.FinTrack_Api.dto.request.conta.DadosRemoverConta;
+import com.example.FinTrack_Api.dto.request.conta.DadosRestaurarConta;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.*;
 
 @Table(name = "conta")
@@ -23,17 +25,17 @@ public class Conta {
         this.nome = dados.nome();
     }
 
-    public void atualizarInformacoes(DadosCadastroConta dados) {
+    public void atualizarInformacoes(DadosAtualizarConta dados) {
         if (dados.nome() != null){
             this.nome = dados.nome();
         }
     }
 
-    public void deletar(DadosCadastroConta dados) {
+    public void remover(DadosRemoverConta dados) {
         this.excluido = true;
     }
 
-    public void restaurar(DadosCadastroConta dados) {
+    public void restaurar(DadosRestaurarConta dados) {
         this.excluido = false;
     }
 }
