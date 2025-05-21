@@ -3,7 +3,6 @@ package com.example.FinTrack_Api.controller;
 import com.example.FinTrack_Api.dto.request.conta.*;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.repository.ContaRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
