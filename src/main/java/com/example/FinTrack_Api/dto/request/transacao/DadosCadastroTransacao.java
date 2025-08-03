@@ -13,6 +13,6 @@ public record DadosCadastroTransacao(
         ,String nome
         ,String descricao
         ,TipoTransacao tipo
-        ,@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy") LocalDate data
+        ,@JsonFormat(shape = JsonFormat.Shape.STRING) LocalDate data
         ,Integer parcela)
 {}
