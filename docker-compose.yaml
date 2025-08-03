@@ -11,7 +11,7 @@ services:
 
   spring-api:
     build:
-      context: database-docker
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8081:8080"
