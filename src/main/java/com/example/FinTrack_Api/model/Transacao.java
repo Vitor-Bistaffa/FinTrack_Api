@@ -61,6 +61,10 @@ public class Transacao {
                 .filter(v -> !v.equals(this.valor))
                 .ifPresent(v -> this.valor = v);
 
+        Optional.ofNullable(dados.nome())
+                .filter(v -> !v.equals(this.nome))
+                .ifPresent(v -> this.nome = v);
+
         Optional.ofNullable(dados.descricao())
                 .filter(v -> !v.equals(this.descricao))
                 .ifPresent(v -> this.descricao = v);
