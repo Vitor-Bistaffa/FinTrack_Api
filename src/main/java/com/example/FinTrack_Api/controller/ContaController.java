@@ -6,9 +6,9 @@ import com.example.FinTrack_Api.repository.ContaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/conta")
 public class ContaController {
@@ -24,7 +24,8 @@ public class ContaController {
     @GetMapping
     public List<DadosListagemConta> listar() {
         return contaRepository.findByExcluidoFalse()
-                .stream().map(DadosListagemConta::new).toList();    }
+                .stream().map(DadosListagemConta::new).toList();
+    }
 
     @PutMapping
     @Transactional
@@ -46,7 +47,6 @@ public class ContaController {
         var conta = contaRepository.getReferenceById(dados.id());
         conta.restaurar(dados);
     }
-
 
 
 }
