@@ -41,9 +41,8 @@ public class TransacaoController {
     }
 
     @GetMapping
-    public List<DadosListagemTransacao> listar() {
-        return transacaoRepository.findAll()
-                .stream().map(DadosListagemTransacao::new).toList();
+    public List<DadosListagemTransacao> listar(@RequestParam(required = false) Long id) {
+        return transacaoService.listarTransacoes(id);
     }
 
     @GetMapping("/total")
