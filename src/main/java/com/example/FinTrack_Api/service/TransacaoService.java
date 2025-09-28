@@ -1,26 +1,34 @@
 package com.example.FinTrack_Api.service;
 
+import com.example.FinTrack_Api.dto.request.transacao.DadosListagemTransacao;
 import com.example.FinTrack_Api.dto.request.transacao.DadosTotalMes;
 import com.example.FinTrack_Api.model.Transacao;
 import com.example.FinTrack_Api.model.enums.TipoTransacao;
 import com.example.FinTrack_Api.repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class TransacaoService {
 
     @Autowired
     private TransacaoRepository transacaoRepository;
+
+    public List<DadosListagemTransacao> listarTransacoes(Long id) {
+        if (id != null) {
+            return transacaoRepository.findById(id)
+                    .stream().map(DadosListagemTransacao::new).toList();
+        }
+        return transacaoRepository.findAll(Sort.by(Sort.Direction.DESC, "data"))
+                .stream().map(DadosListagemTransacao::new).toList();
+    }
 
     public List<DadosTotalMes> calcularTotaisMensais(TipoTransacao tipo, Integer ano) {
         List<Transacao> resultados = transacaoRepository.findBtTipoAndAno(tipo, ano);
