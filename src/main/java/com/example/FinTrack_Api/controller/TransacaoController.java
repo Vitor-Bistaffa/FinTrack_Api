@@ -46,7 +46,7 @@ public class TransacaoController {
     }
 
     @GetMapping("/total")
-    public List<DadosTotalMes> obterTotaisMensais(@RequestParam TipoTransacao tipo, @RequestParam int ano) {
+    public List<DadosTotalMes> obterTotaisMensais(@RequestParam TipoTransacao tipo, @RequestParam Integer ano) {
         return transacaoService.calcularTotaisMensais(tipo, ano);
     }
 
