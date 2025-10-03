@@ -15,7 +15,7 @@ public record DadosListagemTransacao(
         , String descricao
         , String tipo
         , LocalDate data
-        , Integer parcela
+        , String parcela
 
 ) {
     public DadosListagemTransacao(Transacao transacao) {
@@ -28,7 +28,7 @@ public record DadosListagemTransacao(
                 , transacao.getDescricao()
                 , transacao.getTipo().name()
                 , transacao.getData()
-                , transacao.getParcela()
+                , String.valueOf(transacao.getParcela())
         );
     }
 }
