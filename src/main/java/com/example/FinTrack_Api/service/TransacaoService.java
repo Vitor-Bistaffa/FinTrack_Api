@@ -69,19 +69,27 @@ public class TransacaoService {
 
 
     public List<DadosTotalMes> calcularTotaisMensais(TipoTransacao tipo, Integer ano) {
-        List<Transacao> resultados = transacaoRepository.findBtTipoAndAno(tipo, ano);
+        List<Transacao> resultados = transacaoRepository.findByTipo(tipo);
+
 
         BigDecimal[] totalPorMes = new BigDecimal[12];
         Arrays.fill(totalPorMes, BigDecimal.ZERO);
 
         for (Transacao transacao : resultados) {
+
             int parcelas = transacao.getParcela();
             BigDecimal valorParcela = transacao.getValor()
                     .divide(BigDecimal.valueOf(parcelas), 2, RoundingMode.DOWN);
             BigDecimal totalCalculado = valorParcela.multiply(BigDecimal.valueOf(parcelas));
             BigDecimal diferenca = transacao.getValor().subtract(totalCalculado);
+
             for (int i = 0; i < parcelas; i++) {
-                int mes = transacao.getData().plusMonths(i).getMonthValue() - 1;
+                LocalDate dataParcela = transacao.getData().plusMonths(i);
+
+                if (dataParcela.getYear() != ano) continue;
+
+                int mes = dataParcela.getMonthValue() -1;
+
                 BigDecimal valorFinal = valorParcela;
                 if (i == 0) {
                     valorFinal = valorFinal.add(diferenca).setScale(2, RoundingMode.DOWN);
