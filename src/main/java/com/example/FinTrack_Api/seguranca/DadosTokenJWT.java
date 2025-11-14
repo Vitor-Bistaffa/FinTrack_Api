@@ -1,4 +1,4 @@
-package com.example.FinTrack_Api.securty;
+package com.example.FinTrack_Api.seguranca;
 
 public record DadosTokenJWT(String token) {
 }

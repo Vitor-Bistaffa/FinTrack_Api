@@ -1,4 +1,4 @@
-package com.example.FinTrack_Api.securty;
+package com.example.FinTrack_Api.seguranca;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
