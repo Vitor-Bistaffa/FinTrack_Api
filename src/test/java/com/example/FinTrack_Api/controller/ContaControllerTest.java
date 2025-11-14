@@ -6,12 +6,17 @@ import com.example.FinTrack_Api.dto.request.conta.DadosRemoverConta;
 import com.example.FinTrack_Api.dto.request.conta.DadosRestaurarConta;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.repository.ContaRepository;
+import com.example.FinTrack_Api.seguranca.FiltroDeSeguranca;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,8 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(ContaController.class)
+@WebMvcTest(controllers = ContaController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = FiltroDeSeguranca.class)
+        }
+)
+@AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureJsonTesters
+@WithMockUser
 class ContaControllerTest {
 
     @Autowired
