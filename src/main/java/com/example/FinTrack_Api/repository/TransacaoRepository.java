@@ -16,4 +16,6 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
             and year(t.data) = :ano
             """)
     List<Transacao> findBtTipoAndAno(@Param("tipo") TipoTransacao tipo, @Param("ano") int ano);
+
+    List<Transacao> findByTipo(TipoTransacao tipo);
 }

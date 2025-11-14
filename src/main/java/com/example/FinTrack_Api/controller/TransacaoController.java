@@ -1,9 +1,6 @@
 package com.example.FinTrack_Api.controller;
 
-import com.example.FinTrack_Api.dto.request.transacao.DadosAtualizarTransacao;
-import com.example.FinTrack_Api.dto.request.transacao.DadosCadastroTransacao;
-import com.example.FinTrack_Api.dto.request.transacao.DadosListagemTransacao;
-import com.example.FinTrack_Api.dto.request.transacao.DadosTotalMes;
+import com.example.FinTrack_Api.dto.request.transacao.*;
 import com.example.FinTrack_Api.model.Categoria;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.model.Transacao;
@@ -60,9 +57,9 @@ public class TransacaoController {
         transacao.atualizarInformacoes(dados, conta, categoria);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/remover")
     @Transactional
-    public void deletar(@RequestBody DadosAtualizarTransacao dados) {
+    public void deletar(@RequestBody DadosRemoverTransacao dados) {
         transacaoRepository.deleteById(dados.id());
     }
 }
