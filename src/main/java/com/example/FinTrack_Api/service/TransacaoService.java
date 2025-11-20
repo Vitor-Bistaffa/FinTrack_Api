@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransacaoService {
@@ -28,6 +29,7 @@ public class TransacaoService {
 
         if (id != null) {
             transacoes = transacaoRepository.findById(id).stream().toList();
+            return transacoes.stream().map(DadosListagemTransacao::new).toList();
         } else {
             transacoes = transacaoRepository.findAll(Sort.by(Sort.Direction.ASC, "data"));
         }
@@ -56,8 +58,8 @@ public class TransacaoService {
                 // Adiciona DTO com dados da parcela
                 resultado.add(new DadosListagemTransacao(
                         transacao.getId(),
-                        transacao.getConta().getNome(),
-                        transacao.getCategoria().getNome(),
+                        transacao.getConta(),
+                        transacao.getCategoria(),
                         valorFinal,
                         transacao.getNome(),
                         transacao.getDescricao(),

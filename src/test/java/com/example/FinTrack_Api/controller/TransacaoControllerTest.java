@@ -95,7 +95,15 @@ class TransacaoControllerTest {
     @Test
     void listar() throws Exception {
 
-        var lista = List.of(new DadosListagemTransacao(1L, "Teste", "Teste", new BigDecimal("100.00"), "Teste", "Salário", "Despesa", LocalDate.now(), "1/1"));
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+
+        Categoria categoria = new Categoria();
+        categoria.setId(1L);
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+
+        var lista = List.of(new DadosListagemTransacao(1L, conta, categoria, new BigDecimal("100.00"), "Teste", "Salário", "Despesa", LocalDate.now(), "1/1"));
 
         when(transacaoService.listarTransacoes(null)).thenReturn(lista);
 
@@ -136,15 +144,15 @@ class TransacaoControllerTest {
 
     @Test
     void atualizar() throws Exception {
-        var conta = new Conta();
+        Conta conta = new Conta();
         conta.setId(1L);
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
 
-        var categoria = new Categoria();
+        Categoria categoria = new Categoria();
         categoria.setId(1L);
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
 
-        var dados = new DadosAtualizarTransacao(1L, 1L, 1L, new BigDecimal("100.00"), "Teste", "Teste", TipoTransacao.Despesa, LocalDate.now(), 1);
+        var dados = new DadosAtualizarTransacao(1L, conta, categoria, new BigDecimal("100.00"), "Teste", "Teste", TipoTransacao.Despesa, LocalDate.now(), 1);
 
         var transacaoMock = mock(Transacao.class);
         when(transacaoRepository.getReferenceById(1L)).thenReturn(transacaoMock);
@@ -161,7 +169,15 @@ class TransacaoControllerTest {
     @Test
     void deletar() throws Exception {
 
-        var dados = new DadosAtualizarTransacao(1L, 1L, 1L, new BigDecimal("100.00"), "Teste", "Teste", TipoTransacao.Despesa, LocalDate.now(), 1);
+        Conta conta = new Conta();
+        conta.setId(1L);
+        when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
+
+        Categoria categoria = new Categoria();
+        categoria.setId(1L);
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+
+        var dados = new DadosAtualizarTransacao(1L, conta, categoria, new BigDecimal("100.00"), "Teste", "Teste", TipoTransacao.Despesa, LocalDate.now(), 1);
 
         mvc.perform(delete("/transacao")
                         .contentType(MediaType.APPLICATION_JSON)

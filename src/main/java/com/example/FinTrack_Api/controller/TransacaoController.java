@@ -50,9 +50,9 @@ public class TransacaoController {
     @PutMapping
     @Transactional
     public void atualizar(@RequestBody DadosAtualizarTransacao dados) {
-        Conta conta = contaRepository.findById(dados.conta()).orElseThrow(() -> new RuntimeException("Conta inexistente"));
+        Conta conta = contaRepository.findById(dados.conta().getId()).orElseThrow(() -> new RuntimeException("Conta inexistente"));
 
-        Categoria categoria = categoriaRepository.findById(dados.categoria()).orElseThrow(() -> new RuntimeException("Categoria inexistente"));
+        Categoria categoria = categoriaRepository.findById(dados.categoria().getId()).orElseThrow(() -> new RuntimeException("Categoria inexistente"));
         var transacao = transacaoRepository.getReferenceById(dados.id());
         transacao.atualizarInformacoes(dados, conta, categoria);
     }
