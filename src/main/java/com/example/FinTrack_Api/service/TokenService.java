@@ -1,10 +1,9 @@
-package com.example.FinTrack_Api.seguranca;
+package com.example.FinTrack_Api.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.FinTrack_Api.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,8 +35,6 @@ public class TokenService {
     }
 
     public String getSubject(String tokenJWT) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXUyJ9.eyJpc3MiOiJhdXRoMCJ9.AbIJTDMFc7yUa5MhvcP03nJPyCPzZtQcGEp-zWfOkEE";
-        DecodedJWT decodedJWT;
         try {
             var algoritmo = Algorithm.HMAC256(secret);
             return JWT.require(algoritmo)

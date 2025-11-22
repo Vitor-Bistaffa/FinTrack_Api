@@ -1,6 +1,7 @@
 package com.example.FinTrack_Api.seguranca;
 
 import com.example.FinTrack_Api.repository.UsuarioRepository;
+import com.example.FinTrack_Api.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,6 @@ public class FiltroDeSeguranca extends OncePerRequestFilter {
 
     private String recuperarToken(HttpServletRequest request) {
         var cabecalho = request.getHeader("Authorization");
-        System.out.println("cabecalho: " + cabecalho);
         if (cabecalho != null) {
             return cabecalho.replace("Bearer ", "");
 

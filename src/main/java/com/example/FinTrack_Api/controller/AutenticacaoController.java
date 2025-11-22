@@ -1,9 +1,10 @@
 package com.example.FinTrack_Api.controller;
 
 import com.example.FinTrack_Api.dto.request.usuario.DadosAutenticacao;
+import com.example.FinTrack_Api.model.Transacao;
 import com.example.FinTrack_Api.seguranca.DadosTokenJWT;
 import com.example.FinTrack_Api.model.Usuario;
-import com.example.FinTrack_Api.seguranca.TokenService;
+import com.example.FinTrack_Api.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,4 @@ public class AutenticacaoController {
 
         return ResponseEntity.ok(new DadosTokenJWT(token));
     }
-
 }
