@@ -7,12 +7,13 @@ import com.example.FinTrack_Api.dto.request.transacao.DadosTotalMes;
 import com.example.FinTrack_Api.model.Categoria;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.model.Transacao;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.model.enums.TipoTransacao;
 import com.example.FinTrack_Api.repository.CategoriaRepository;
 import com.example.FinTrack_Api.repository.ContaRepository;
 import com.example.FinTrack_Api.repository.TransacaoRepository;
 import com.example.FinTrack_Api.seguranca.FiltroDeSeguranca;
-import com.example.FinTrack_Api.seguranca.TokenService;
+import com.example.FinTrack_Api.service.TokenService;
 import com.example.FinTrack_Api.service.TransacaoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -95,6 +98,19 @@ class TransacaoControllerTest {
     @Test
     void listar() throws Exception {
 
+        var usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setLogin("admin");
+        usuario.setSenha("admin");
+
+        var authentication = new UsernamePasswordAuthenticationToken(
+                usuario,
+                null,
+                usuario.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
         Conta conta = new Conta();
         conta.setId(1L);
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
@@ -103,9 +119,21 @@ class TransacaoControllerTest {
         categoria.setId(1L);
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
 
-        var lista = List.of(new DadosListagemTransacao(1L, conta, categoria, new BigDecimal("100.00"), "Teste", "Salário", "Despesa", LocalDate.now(), "1/1"));
+        var transacao = new Transacao();
+        transacao.setId(1L);
+        transacao.setConta(conta);
+        transacao.setCategoria(categoria);
+        transacao.setValor(new BigDecimal("100.00"));
+        transacao.setNome("teste1");
+        transacao.setDescricao("Salário");
+        transacao.setTipo(TipoTransacao.Despesa);
+        transacao.setData(LocalDate.now());
+        transacao.setParcela(1);
+        transacao.setUsuario(usuario);
 
-        when(transacaoService.listarTransacoes(null)).thenReturn(lista);
+        var lista = List.of((new DadosListagemTransacao(transacao)));
+
+        when(transacaoService.listarTransacoes(null,usuario)).thenReturn(lista);
 
 
         mvc.perform(get("/transacao")
@@ -113,7 +141,7 @@ class TransacaoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].descricao").value("Salário"));
 
-        verify(transacaoService, times(1)).listarTransacoes(null);
+        verify(transacaoService, times(1)).listarTransacoes(null, usuario);
     }
 
     @Test
@@ -179,7 +207,7 @@ class TransacaoControllerTest {
 
         var dados = new DadosAtualizarTransacao(1L, conta, categoria, new BigDecimal("100.00"), "Teste", "Teste", TipoTransacao.Despesa, LocalDate.now(), 1);
 
-        mvc.perform(delete("/transacao")
+        mvc.perform(delete("/transacao/remover")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonAtualizarTransacao.write(dados).getJson()))
                 .andExpect(status().isOk());

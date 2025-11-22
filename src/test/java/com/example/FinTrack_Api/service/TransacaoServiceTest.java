@@ -7,10 +7,12 @@ import com.example.FinTrack_Api.dto.request.transacao.DadosTotalMes;
 import com.example.FinTrack_Api.model.Categoria;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.model.Transacao;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.model.enums.TipoTransacao;
 import com.example.FinTrack_Api.repository.CategoriaRepository;
 import com.example.FinTrack_Api.repository.ContaRepository;
 import com.example.FinTrack_Api.repository.TransacaoRepository;
+import com.example.FinTrack_Api.repository.UsuarioRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +44,20 @@ class TransacaoServiceTest {
     private TransacaoRepository transacaoRepository;
     @Autowired
     private TransacaoService transacaoService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Test
     @DisplayName("Deve devolver duas transações, uma sendo mês 12 do ano atual e outra sendo mês 1 do ano seguinte")
     void listarTransacoes() {
 
-        var categoria = cadastrarCategoria("Comprar");
-        var conta = cadastrarConta("Nubank");
+        var usuario = cadastrarUsuario("admin", "admin");
+        var categoria = cadastrarCategoria("Comprar", usuario);
+        var conta = cadastrarConta("Nubank", usuario);
 
-        cadastrarTransacao(conta, categoria, 100.00, "Compra", "Teste de parcelas", Despesa, LocalDate.of(LocalDate.now().getYear(), 12, 1), 2);
+        cadastrarTransacao(conta, categoria, 100.00, "Compra", "Teste de parcelas", Despesa, LocalDate.of(LocalDate.now().getYear(), 12, 1), 2, usuario);
 
-        List<DadosListagemTransacao> resultado = transacaoService.listarTransacoes(null);
+        List<DadosListagemTransacao> resultado = transacaoService.listarTransacoes(null, usuario);
         assertThat(resultado).hasSize(2);
 
         assertThat(resultado.get(0).valor()).isEqualByComparingTo("50.00");
@@ -63,10 +68,12 @@ class TransacaoServiceTest {
     @Test
     @DisplayName("Deve devolver o total 50 tanto no mes 12 do ano atual quanto no mês 1 do proximo ano")
     void calcularTotaisMensais() {
-        var categoria = cadastrarCategoria("Comprar");
-        var conta = cadastrarConta("Nubank");
 
-        cadastrarTransacao(conta, categoria, 100.00, "Compra", "Teste de parcelas", Despesa, LocalDate.of(LocalDate.now().getYear(), 12, 1), 2);
+        var usuario = cadastrarUsuario("admin","admin");
+        var categoria = cadastrarCategoria("Comprar", usuario);
+        var conta = cadastrarConta("Nubank", usuario);
+
+        cadastrarTransacao(conta, categoria, 100.00, "Compra", "Teste de parcelas", Despesa, LocalDate.of(LocalDate.now().getYear(), 12, 1), 2, usuario);
 
         List<DadosTotalMes> resultado2025 = transacaoService.calcularTotaisMensais(Despesa, 2025);
         List<DadosTotalMes> resultado2026 = transacaoService.calcularTotaisMensais(Despesa, 2026);
@@ -76,23 +83,37 @@ class TransacaoServiceTest {
     }
 
 
-    private void cadastrarTransacao(Conta conta, Categoria categoria, Double valor, String nome, String descricao, TipoTransacao tipoTransacao, LocalDate data, Integer parcela) {
+    private void cadastrarTransacao(
+            Conta conta
+            , Categoria categoria
+            , Double valor
+            , String nome
+            , String descricao
+            , TipoTransacao tipoTransacao
+            , LocalDate data
+            , Integer parcela
+            , Usuario usuario) {
 
-        transacaoRepository.save(new Transacao(null, conta, categoria, new BigDecimal(valor), nome, descricao, tipoTransacao, data, parcela));
+        transacaoRepository.save(new Transacao(null, conta, categoria, new BigDecimal(valor), nome, descricao, tipoTransacao, data, parcela, usuario));
 
     }
 
-    private Categoria cadastrarCategoria(String nome) {
-        var categoria = new Categoria(new DadosCadastroCategoria(nome));
+    private Categoria cadastrarCategoria(String nome, Usuario usuario) {
+        var categoria = new Categoria(new DadosCadastroCategoria(nome), usuario);
         categoriaRepository.save(categoria);
         return categoria;
     }
 
-    private Conta cadastrarConta(String nome) {
-        var conta = new Conta(new DadosCadastroConta(nome));
+    private Conta cadastrarConta(String nome, Usuario usuario) {
+        var conta = new Conta(new DadosCadastroConta(nome), usuario);
         contaRepository.save(conta);
         return conta;
     }
 
+    private Usuario cadastrarUsuario(String login, String senha) {
+        var usuario = new Usuario(login, senha);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
 
 }

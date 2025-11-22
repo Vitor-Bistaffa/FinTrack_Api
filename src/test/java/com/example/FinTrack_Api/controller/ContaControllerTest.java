@@ -5,6 +5,7 @@ import com.example.FinTrack_Api.dto.request.conta.DadosCadastroConta;
 import com.example.FinTrack_Api.dto.request.conta.DadosRemoverConta;
 import com.example.FinTrack_Api.dto.request.conta.DadosRestaurarConta;
 import com.example.FinTrack_Api.model.Conta;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.repository.ContaRepository;
 import com.example.FinTrack_Api.seguranca.FiltroDeSeguranca;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,18 +75,30 @@ class ContaControllerTest {
 
     @Test
     void listar() throws Exception {
+        var usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setLogin("admin");
+        usuario.setSenha("admin");
+
+        var authentication = new UsernamePasswordAuthenticationToken(
+                usuario,
+                null,
+                usuario.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         var conta = new Conta();
         conta.setId(1L);
         conta.setNome("Teste");
+        conta.setUsuario(usuario);
 
-        when(contaRepository.findByExcluidoFalse()).thenReturn(List.of(conta));
+        when(contaRepository.findByExcluidoFalseAndUsuarioIs(usuario)).thenReturn(List.of(conta));
 
         mvc.perform(get("/conta"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nome").value("Teste"));
 
-        verify(contaRepository, times(1)).findByExcluidoFalse();
+        verify(contaRepository, times(1)).findByExcluidoFalseAndUsuarioIs(usuario);
 
     }
 

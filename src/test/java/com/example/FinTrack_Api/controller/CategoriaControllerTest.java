@@ -5,8 +5,11 @@ import com.example.FinTrack_Api.dto.request.categoria.DadosCadastroCategoria;
 import com.example.FinTrack_Api.dto.request.categoria.DadosRemoverCategoria;
 import com.example.FinTrack_Api.dto.request.categoria.DadosRestaurarCategoria;
 import com.example.FinTrack_Api.model.Categoria;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.repository.CategoriaRepository;
 import com.example.FinTrack_Api.seguranca.FiltroDeSeguranca;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -16,6 +19,9 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,6 +62,9 @@ class CategoriaControllerTest {
     @MockitoBean
     private CategoriaRepository categoriaRepository;
 
+    @MockitoBean
+    private UserDetailsService userDetailsService;
+
     @Test
     void cadastrar() throws Exception {
 
@@ -72,18 +81,32 @@ class CategoriaControllerTest {
 
     @Test
     void listar() throws Exception {
+
+        var usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setLogin("admin");
+        usuario.setSenha("admin");
+
+        var authentication = new UsernamePasswordAuthenticationToken(
+                usuario,
+                null,
+                usuario.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         var categoria = new Categoria();
         categoria.setId(1L);
         categoria.setNome("Teste");
+        categoria.setUsuario(usuario);
 
-        when(categoriaRepository.findByExcluidoFalse()).thenReturn(List.of(categoria));
+        when(categoriaRepository.findByExcluidoFalseAndUsuarioIs(usuario))
+                .thenReturn(List.of(categoria));
 
         mvc.perform(get("/categoria"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nome").value("Teste"));
 
-        verify(categoriaRepository, times(1)).findByExcluidoFalse();
-
+        verify(categoriaRepository).findByExcluidoFalseAndUsuarioIs(usuario);
     }
 
     @Test
