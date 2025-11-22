@@ -10,13 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
-    @Query(""" 
-            select t
-            from transacao t
-            where t.tipo = :tipo
-            and year(t.data) = :ano
-            """)
-    List<Transacao> findBtTipoAndAno(@Param("tipo") TipoTransacao tipo, @Param("ano") int ano);
 
     List<Transacao> findByTipo(TipoTransacao tipo);
 
