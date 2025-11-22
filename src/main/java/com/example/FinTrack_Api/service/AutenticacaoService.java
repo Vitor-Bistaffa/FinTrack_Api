@@ -1,6 +1,8 @@
 package com.example.FinTrack_Api.service;
 
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.repository.UsuarioRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,4 +18,5 @@ public class AutenticacaoService  implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return usuarioRepository.findByLogin(username);
     }
+
 }

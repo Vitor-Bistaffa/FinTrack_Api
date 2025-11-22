@@ -2,8 +2,10 @@ package com.example.FinTrack_Api.controller;
 
 import com.example.FinTrack_Api.dto.request.conta.*;
 import com.example.FinTrack_Api.model.Conta;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.repository.ContaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -16,13 +18,13 @@ public class ContaController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody DadosCadastroConta dados) {
-        contaRepository.save(new Conta(dados));
+    public void cadastrar(@RequestBody DadosCadastroConta dados, @AuthenticationPrincipal Usuario usuario) {
+        contaRepository.save(new Conta(dados,usuario));
     }
 
     @GetMapping
-    public List<DadosListagemConta> listar() {
-        return contaRepository.findByExcluidoFalse()
+    public List<DadosListagemConta> listar(@AuthenticationPrincipal Usuario usuario) {
+        return contaRepository.findByExcluidoFalseAndUsuarioIs(usuario)
                 .stream().map(DadosListagemConta::new).toList();
     }
 

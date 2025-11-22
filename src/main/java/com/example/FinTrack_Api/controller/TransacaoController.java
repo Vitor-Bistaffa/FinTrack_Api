@@ -4,12 +4,14 @@ import com.example.FinTrack_Api.dto.request.transacao.*;
 import com.example.FinTrack_Api.model.Categoria;
 import com.example.FinTrack_Api.model.Conta;
 import com.example.FinTrack_Api.model.Transacao;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.model.enums.TipoTransacao;
 import com.example.FinTrack_Api.repository.CategoriaRepository;
 import com.example.FinTrack_Api.repository.ContaRepository;
 import com.example.FinTrack_Api.repository.TransacaoRepository;
 import com.example.FinTrack_Api.service.TransacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,17 +31,17 @@ public class TransacaoController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody DadosCadastroTransacao dados) {
+    public void cadastrar(@RequestBody DadosCadastroTransacao dados, @AuthenticationPrincipal Usuario usuario) {
         Conta conta = contaRepository.findById(dados.conta()).orElseThrow(() -> new RuntimeException("Conta inexistente"));
 
         Categoria categoria = categoriaRepository.findById(dados.categoria()).orElseThrow(() -> new RuntimeException("Categoria inexistente"));
 
-        transacaoRepository.save(new Transacao(dados, conta, categoria));
+        transacaoRepository.save(new Transacao(dados, conta, categoria, usuario));
     }
 
     @GetMapping
-    public List<DadosListagemTransacao> listar(@RequestParam(required = false) Long id) {
-        return transacaoService.listarTransacoes(id);
+    public List<DadosListagemTransacao> listar(@RequestParam(required = false) Long id, @AuthenticationPrincipal Usuario usuario) {
+        return transacaoService.listarTransacoes(id,usuario);
     }
 
     @GetMapping("/total")

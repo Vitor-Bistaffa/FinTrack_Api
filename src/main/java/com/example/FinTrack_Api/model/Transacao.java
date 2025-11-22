@@ -36,8 +36,11 @@ public class Transacao {
     private TipoTransacao tipo;
     private LocalDate data;
     private Integer parcela;
+    @ManyToOne
+    @JoinColumn(name = "fk_id_usuario")
+    private Usuario usuario;
 
-    public Transacao(DadosCadastroTransacao dados, Conta conta, Categoria categoria) {
+    public Transacao(DadosCadastroTransacao dados, Conta conta, Categoria categoria, Usuario usuario ) {
         this.conta = conta;
         this.categoria = categoria;
         this.valor = dados.valor();
@@ -46,6 +49,7 @@ public class Transacao {
         this.tipo = dados.tipo();
         this.data = dados.data();
         this.parcela = dados.parcela();
+        this.usuario = usuario;
     }
 
     public void atualizarInformacoes(DadosAtualizarTransacao dados, Conta conta, Categoria categoria) {

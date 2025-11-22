@@ -20,13 +20,18 @@ public class Conta {
     private Long id;
     private String nome;
     private Boolean excluido = false;
+    @ManyToOne
+    @JoinColumn(name = "fk_id_usuario")
+    private Usuario usuario;
 
-    public Conta(DadosCadastroConta dados) {
+    public Conta(DadosCadastroConta dados, Usuario usuario) {
         this.nome = dados.nome();
+        this.excluido = false;
+        this.usuario = usuario;
     }
 
     public void atualizarInformacoes(DadosAtualizarConta dados) {
-        if (dados.nome() != null){
+        if (dados.nome() != null) {
             this.nome = dados.nome();
         }
     }

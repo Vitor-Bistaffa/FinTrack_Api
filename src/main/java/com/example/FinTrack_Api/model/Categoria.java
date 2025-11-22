@@ -20,10 +20,14 @@ public class Categoria {
     private Long id;
     private String nome;
     private Boolean excluido = false;
+    @ManyToOne
+    @JoinColumn(name = "fk_id_usuario")
+    private Usuario usuario;
 
-    public Categoria(DadosCadastroCategoria dados) {
+    public Categoria(DadosCadastroCategoria dados, Usuario usuario) {
         this.nome = dados.nome();
         this.excluido = false;
+        this.usuario = usuario;
     }
 
     public void atualizarInformacoes(DadosAtualizarCategoria dados) {

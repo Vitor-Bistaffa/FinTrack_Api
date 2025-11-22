@@ -1,6 +1,7 @@
 package com.example.FinTrack_Api.repository;
 
 import com.example.FinTrack_Api.model.Transacao;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.model.enums.TipoTransacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,7 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
     List<Transacao> findBtTipoAndAno(@Param("tipo") TipoTransacao tipo, @Param("ano") int ano);
 
     List<Transacao> findByTipo(TipoTransacao tipo);
+
+    List<Transacao> findByUsuarioOrderByDataAsc(Usuario usuario);
+
 }

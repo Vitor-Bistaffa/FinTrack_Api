@@ -3,10 +3,12 @@ package com.example.FinTrack_Api.service;
 import com.example.FinTrack_Api.dto.request.transacao.DadosListagemTransacao;
 import com.example.FinTrack_Api.dto.request.transacao.DadosTotalMes;
 import com.example.FinTrack_Api.model.Transacao;
+import com.example.FinTrack_Api.model.Usuario;
 import com.example.FinTrack_Api.model.enums.TipoTransacao;
 import com.example.FinTrack_Api.repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,14 +26,14 @@ public class TransacaoService {
     private TransacaoRepository transacaoRepository;
 
     // Lista todas as transações ou apenas a transação com o ID informado
-    public List<DadosListagemTransacao> listarTransacoes(Long id) {
+    public List<DadosListagemTransacao> listarTransacoes(Long id, @AuthenticationPrincipal Usuario usuario) {
         List<Transacao> transacoes;
 
         if (id != null) {
             transacoes = transacaoRepository.findById(id).stream().toList();
             return transacoes.stream().map(DadosListagemTransacao::new).toList();
         } else {
-            transacoes = transacaoRepository.findAll(Sort.by(Sort.Direction.ASC, "data"));
+            transacoes = transacaoRepository.findByUsuarioOrderByDataAsc(usuario);
         }
 
         List<DadosListagemTransacao> resultado = new ArrayList<>();
