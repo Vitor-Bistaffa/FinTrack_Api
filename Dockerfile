@@ -8,15 +8,17 @@ COPY pom.xml ./
 COPY .mvn .mvn
 RUN mvn dependency:go-offline
 
-# Copia o resto do código depois\
+# Copia o resto do código depois
 COPY src ./src
 
 # Compila o projeto (sem testes)
 RUN mvn package -DskipTests
 
 # Etapa de execução
-FROM openjdk:21
+FROM eclipse-temurin:21
+
+WORKDIR /app
 
 COPY --from=build /app/target/FinTrack_Api-0.0.1-SNAPSHOT.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=docker", "/app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "app.jar"]

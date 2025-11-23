@@ -1,41 +1,54 @@
 # FinTrack_Api
 
-A **FinTrack API** é uma aplicação REST desenvolvida com **Spring Boot** que permite o controle de finanças pessoais. Com ela, o usuário pode registrar receitas, despesas e acompanhar o saldo disponível com facilidade.
+O **FinTrack API** é uma aplicação REST desenvolvida com **Spring Boot** que permite o controle de finanças pessoais. Com ela, o usuário pode registrar receitas, despesas e acompanhar o saldo disponível com facilidade.
 
 
 ```mermaid
+---
+config:
+  layout: elk
+---
 classDiagram
+direction RL
     class categoria {
-        +serial id
-        +varchar nome
+	    +serial id
+	    +integer fk_id_usuario
+	    +varchar nome
     }
     class conta {
-        +serial id
-        +varchar nome
+	    +serial id
+	    +integer fk_id_usuario
+	    +varchar nome
     }
-        class tipo_transacao {
-        Receita
-        Despesa
+    class tipo_transacao {
+	    Receita
+	    Despesa
     }
-    <<enumeration>> tipo_transacao
     class transacao {
-        +serial id
-        +integer fk_id_conta
-        +integer fk_id_categoria
-        +decimal valor
-        +varchar nome
-        +text descricao
-        +tipo_transacao tipo
-        +date data
-        +integer parcela
+	    +serial id
+	    +integer fk_id_conta
+	    +integer fk_id_categoria
+	    +integer fk_id_usuairo
+	    +decimal valor
+	    +varchar nome
+	    +text descricao
+	    +tipo_transacao tipo
+	    +date data
+	    +integer parcela
     }
-    class saldo {
-        +serial id
-        +decimal saldo_atual
-        +date data
+    class usuario {
+	    +serial id
+	    +varchar login
+	    +varchar senha
     }
-    conta "1" --> "N" transacao : possui
-    categoria "1" --> "N" transacao : classifica
+
+	<<enumeration>> tipo_transacao
+
+    conta "1" --> "N" transacao : Possui
+    categoria "1" --> "N" transacao : Classifica
+    conta "N" <-- "1" usuario : Possui
+    categoria "N" <-- "1" usuario : Possui
+    transacao "N" <-- "1" usuario : Possui
 ```
 
 ### Tecnologias Utilizadas
