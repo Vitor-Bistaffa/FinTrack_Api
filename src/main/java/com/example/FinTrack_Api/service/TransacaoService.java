@@ -1,5 +1,7 @@
 package com.example.FinTrack_Api.service;
 
+import com.example.FinTrack_Api.dto.request.categoria.DadosListagemCategoria;
+import com.example.FinTrack_Api.dto.request.conta.DadosListagemConta;
 import com.example.FinTrack_Api.dto.request.transacao.DadosListagemTransacao;
 import com.example.FinTrack_Api.dto.request.transacao.DadosTotalMes;
 import com.example.FinTrack_Api.model.Transacao;
@@ -57,15 +59,15 @@ public class TransacaoService {
 
                 // Adiciona DTO com dados da parcela
                 resultado.add(new DadosListagemTransacao(
-                        transacao.getId(),
-                        transacao.getConta(),
-                        transacao.getCategoria(),
-                        valorFinal,
-                        transacao.getNome(),
-                        transacao.getDescricao(),
-                        transacao.getTipo().name(),
-                        dataParcela,
-                        (i + 1) + "/" + parcelas
+                        transacao.getId()
+                        , new DadosListagemConta(transacao.getConta())
+                        , new DadosListagemCategoria(transacao.getCategoria())
+                        , valorFinal
+                        , transacao.getNome()
+                        , transacao.getDescricao()
+                        , transacao.getTipo().name()
+                        , dataParcela
+                        , (i + 1) + "/" + parcelas
                 ));
             }
         }
